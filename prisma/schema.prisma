@@ -1,0 +1,40 @@
+//prima db push -> Envia os dados do schema para o db
+//prisma db pull -> pega os dados do banco e traz para o schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ALUNO
+  PROFESSOR
+  ADMIN
+}
+
+model User{
+    id Int @id @default(autoincrement()) 
+    status Boolean @default(true)
+    role Role @default(ALUNO)
+    name String
+    class Int 
+    email String @unique
+    createdAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+
+    @@map("users")
+} 
+
+model sala{
+    id Int @id @default(autoincrement()) 
+    status Boolean @default(true)
+    title String
+    createdAt DateTime @default(now())
+    updateAt DateTime @updatedAt
+
+    @@map("sala")
+} 
