@@ -29,12 +29,12 @@ model User{
     @@map("users")
 } 
 
-model sala{
+model ClassRoom{
     id Int @id @default(autoincrement()) 
     status Boolean @default(true)
     title String
     createdAt DateTime @default(now())
     updateAt DateTime @updatedAt
 
-    @@map("sala")
+    @@map("classroom")
 } 

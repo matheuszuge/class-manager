@@ -1,10 +1,27 @@
-import { prisma } from "../libs/prisma";
 import { Request, Response } from "express";
+import { ClassService } from "../services/classService";
 
 export class ClassController {
+  private classService;
+  constructor() {
+    this.classService = new ClassService();
+  }
+
+  async create(req: Request, res: Response) {
+    const { status, title } = req.body;
+    const data = { status, title };
+    try {
+      const newClass = await this.classService.create(data);
+      res.status(201).json({ mensagem: "Sala criada com sucesso", newClass });
+    } catch (error) {
+      console.error("Error creating class:", error);
+      res.status(500).json({ error: "Failed to create class" });
+    }
+  }
+
   async getAll(req: Request, res: Response) {
     try {
-      const newClass = await prisma.sala.findMany();
+      const newClass = await this.classService.findAll();
       res.status(200).json(newClass);
     } catch (error) {
       console.error("Error:", error);
@@ -12,23 +29,9 @@ export class ClassController {
     }
   }
 
-  async create(req: Request, res: Response) {
-    const { status, title } = req.body;
-    const data = { status, title };
-    try {
-      const newClass = await prisma.sala.create({ data });
-      res.status(200).json({ mensagem: "Sala criada com sucesso", newClass });
-    } catch (error) {
-      console.error("Error creating class:", error);
-      res.status(500).json({ error: "Failed to create class" });
-    }
-  }
-
   async update(req: Request, res: Response) {
-    const { id } = req.params;
-    const { status, title } = req.body;
+    const { id, status, title } = req.body;
     const data: any = {};
-
     if (status !== undefined) data.status = status;
     if (title !== undefined) data.title = title;
 
@@ -37,13 +40,8 @@ export class ClassController {
     }
 
     try {
-      const updatedClass = await prisma.sala.update({
-        where: { id: Number(id) },
-        data,
-      });
-      res
-        .status(200)
-        .json({ mensagem: "Sala editada com sucesso", updatedClass });
+      const newClass = await this.classService.update(id, data);
+      res.status(201).json({ mensagem: "Sala editada com sucesso", newClass });
     } catch (error) {
       console.error("Error updating class:", error);
       res.status(500).json({ error: "Failed to update class" });
@@ -53,7 +51,7 @@ export class ClassController {
   async delete(req: Request, res: Response) {
     const { id } = req.params;
     try {
-      const deletedClass = await prisma.sala.delete({
+      const deletedClass = this.classService.delete({
         where: { id: Number(id) },
       });
       res
