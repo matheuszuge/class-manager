@@ -1,48 +1,48 @@
-import { prisma } from "../libs/prisma";
 import { Request, Response } from "express";
+import { UserService } from "../services/userService";
 
 export class UserController {
-  async create(req: Request, res: Response) {
-    const { status, role, name, class: userClass, email } = req.body;
-    const data = { status, role, name, class: userClass, email };
+  private userService;
+  constructor() {
+    this.userService = new UserService();
+  }
 
-    if (!status || !role || !name || !userClass || !email) {
-      return res
-        .status(400)
-        .json({ error: "Todos os campos são obrigatórios" });
-    }
+  async create(req: Request, res: Response) {
+    const { status, title } = req.body;
+    const data = { status, title };
     try {
-      const newUser = await prisma.user.create({ data });
-      res.status(200).json({ mensagem: "Usuario criado com sucesso", newUser });
+      const newuser = await this.userService.create(data);
+      res.status(201).json({ mensagem: "Sala criada com sucesso", newuser });
     } catch (error) {
       console.error("Error creating user:", error);
       res.status(500).json({ error: "Failed to create user" });
     }
   }
 
+  async getAll(req: Request, res: Response) {
+    try {
+      const newuser = await this.userService.getAll();
+      res.status(200).json(newuser);
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ error: "Error to find useres" });
+    }
+  }
+
   async update(req: Request, res: Response) {
+    const { status, title } = req.body;
     const { id } = req.params;
-    // Extrai apenas os campos enviados
-    const { status, role, name, class: userClass, email } = req.body;
     const data: any = {};
     if (status !== undefined) data.status = status;
-    if (role !== undefined) data.role = role;
-    if (name !== undefined) data.name = name;
-    if (userClass !== undefined) data.class = userClass;
-    if (email !== undefined) data.email = email;
+    if (title !== undefined) data.title = title;
 
     if (Object.keys(data).length === 0) {
       return res.status(400).json({ error: "Nenhum campo para atualizar" });
     }
 
     try {
-      const updatedUser = await prisma.user.update({
-        where: { id: Number(id) },
-        data,
-      });
-      res
-        .status(200)
-        .json({ mensagem: "Usuario editado com sucesso", updatedUser });
+      const newuser = await this.userService.update(Number(id), data);
+      res.status(201).json({ mensagem: "Sala editada com sucesso", newuser });
     } catch (error) {
       console.error("Error updating user:", error);
       res.status(500).json({ error: "Failed to update user" });
@@ -51,27 +51,14 @@ export class UserController {
 
   async delete(req: Request, res: Response) {
     const { id } = req.params;
-
     try {
-      const deletedUser = await prisma.user.delete({
+      const deleteduser = this.userService.delete({
         where: { id: Number(id) },
       });
-      res
-        .status(200)
-        .json({ mensagem: "Usuario deletado com sucesso", deletedUser });
+      res.status(200).json({ mensagem: "Sala deletada com sucesso" });
     } catch (error) {
       console.error("Error deleting user:", error);
       res.status(500).json({ error: "Failed to delete user" });
-    }
-  }
-
-  async getAll(req: Request, res: Response) {
-    try {
-      const users = await prisma.user.findMany();
-      res.status(200).json(users);
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ error: "Error to find users" });
     }
   }
 }
