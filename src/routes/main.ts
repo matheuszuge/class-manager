@@ -3,11 +3,15 @@ import { prisma } from "../libs/prisma";
 import { authRouter } from "./authRouter";
 import { userRouter } from "./userRouter";
 import { classRouter } from "./classRouter";
+import { notFoundRequest } from "./errorHandler";
 
 export const mainRouter = Router();
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/user", userRouter);
 mainRouter.use("/class", classRouter);
+mainRouter.use(notFoundRequest);
+
+
 
 mainRouter.get("/ping", (req, res) => {
     res.json({ pong: true });
