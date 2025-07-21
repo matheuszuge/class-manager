@@ -6,14 +6,14 @@ import { classRouter } from "./classRouter";
 
 export const mainRouter = Router();
 mainRouter.use("/auth", authRouter);
-mainRouter.use("/users", userRouter);
+mainRouter.use("/user", userRouter);
 mainRouter.use("/class", classRouter);
 
 mainRouter.get("/ping", (req, res) => {
-  res.json({ pong: true });
+    res.json({ pong: true });
 });
 
 mainRouter.get("/teste", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
+    const users = await prisma.user.findMany();
+    res.json(users);
 });

@@ -1,8 +1,6 @@
 import { Router } from "express";
 import { ClassController } from "../controllers/classController";
 
-//const classService = new ClassService();
-//const classController = new ClassController(classService);
 const classController = new ClassController();
 export const classRouter = Router();
 
