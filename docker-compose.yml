@@ -7,15 +7,36 @@ services:
         env_file:
             - .env
         depends_on:
-            - db
+            db:
+                condition: service_healthy
+        volumes:
+            - ./src:/app/src
+            - /app/node_modules
+        environment:
+            - NODE_ENV=development
+            - TS_NODE_WATCH=true
+            - CHOKIDAR_USEPOLLING=true # Importante para watch no Docker
+            - WATCHPACK_POLLING=true # Adicional para melhorar detecção
+        restart: unless-stopped
+        working_dir: /app # Garante o diretório correto
+        stdin_open: true # Permite interação com o terminal
+        tty: true # Aloca um pseudo-TTY
+
     db:
         image: mysql:8.4
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
             MYSQL_DATABASE: classmanager
+            MYSQL_ROOT_PASSWORD: "" # Adicionado para compatibilidade
         ports:
             - "3306:3306"
         volumes:
             - mysqldata:/var/lib/mysql
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 5s
+            timeout: 10s
+            retries: 10
+
 volumes:
     mysqldata:

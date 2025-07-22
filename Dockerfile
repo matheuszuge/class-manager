@@ -1,24 +1,22 @@
-# Usa uma imagem oficial do Node.js como base
 FROM node:20
 
-# Define o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copia os arquivos de dependências e schema do Prisma
+# Primeiro copia apenas o necessário para instalação de dependências
 COPY package*.json ./
 COPY prisma ./prisma
 COPY .env ./
 
-# Instala as dependências
-RUN npm install
-# Gera o cliente Prisma necessário para @prisma/client
+# Instala TODAS as dependências (incluindo devDependencies)
+RUN npm install --include=dev
+
+# Gera o cliente Prisma
 RUN npx prisma generate
 
-# Copia o restante do código
+# Copia o restante (isso será sobrescrito pelo volume, mas é necessário para build)
 COPY . .
 
-# Expõe a porta que o app usa
 EXPOSE 3000
 
-# Comando para iniciar o servidor
+# Usa nodemon para monitorar mudanças (melhor integração com Docker)
 CMD ["npm", "run", "dev"]

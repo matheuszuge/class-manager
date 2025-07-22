@@ -21,6 +21,7 @@ model User{
     status Boolean @default(true)
     role Role @default(ALUNO)
     name String
+    password String @db.VarChar(255) 
     class Int 
     email String @unique
     createdAt DateTime @default(now())

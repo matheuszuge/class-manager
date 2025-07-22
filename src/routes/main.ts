@@ -1,23 +1,21 @@
 import { Router } from "express";
-import { prisma } from "../libs/prisma";
 import { authRouter } from "./authRouter";
 import { userRouter } from "./userRouter";
 import { classRouter } from "./classRouter";
-import { notFoundRequest } from "./errorHandler";
+import { loginRouter } from "./loginRouter";
+import { interceptor } from "../middlewares/interception";
+import { notFoundRequest, errorHandler } from "./errorHandler";
 
 export const mainRouter = Router();
 mainRouter.use("/auth", authRouter);
 mainRouter.use("/user", userRouter);
 mainRouter.use("/class", classRouter);
-mainRouter.use(notFoundRequest);
+mainRouter.use("/login", loginRouter);
 
-
-
-mainRouter.get("/ping", (req, res) => {
+mainRouter.get("/ping", interceptor, (req, res) => {
     res.json({ pong: true });
 });
 
-mainRouter.get("/teste", async (req, res) => {
-    const users = await prisma.user.findMany();
-    res.json(users);
-});
+
+mainRouter.use(notFoundRequest);
+mainRouter.use(errorHandler);

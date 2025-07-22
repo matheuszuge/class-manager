@@ -11,10 +11,6 @@ export class ClassController {
         const { id } = req.params;
         try {
             const classData = await this.classService.getById(+id);
-            //TODO: Esta logica será movida para o service e trataremos errorhandler by interceptors
-            // if (!classData) {
-            //     return res.status(404).json({ error: "Class not found" });
-            // }
             res.status(201).json(classData);
         } catch (error) {
             console.error("Error fetching class by ID:", error);
@@ -50,12 +46,7 @@ export class ClassController {
     async update(req: Request, res: Response) {
         const { status, title } = req.body;
         const { id } = req.params;
-        const data: any = {};
-
-        this.classService.verifyDataExist(id);
-        this.classService.verifyDataExist(status);
-        this.classService.verifyDataExist(title);
-
+        const data: any = {status, title};
         try {
             const newClass = await this.classService.update(Number(id), data);
             res.status(201).json({

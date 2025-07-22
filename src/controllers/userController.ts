@@ -11,10 +11,6 @@ export class UserController {
         const { id } = req.params;
         try {
             const userData = await this.userService.getById(+id);
-            //TODO: Esta logica será movida para o service e trataremos errorhandler by interceptors
-            // if (!classData) {
-            //     return res.status(404).json({ error: "Class not found" });
-            // }
             res.status(201).json(userData);
         } catch (error) {
             console.error("Error fetching user by ID:", error);
@@ -43,7 +39,7 @@ export class UserController {
             res.status(201).json(newuser);
         } catch (error) {
             console.error("Error:", error);
-            res.status(500).json({ error: "Error to find useres" });
+            res.status(500).json({ error: "Error to find users" });
         }
     }
 
@@ -64,13 +60,13 @@ export class UserController {
         }
     }
 
+    
+
     async delete(req: Request, res: Response) {
         const { id } = req.params;
         try {
-            this.userService.delete({
-                where: { id: Number(id) },
-            });
-            res.status(201).json({ mensagem: "Sala deletada com sucesso" });
+            const deletedUser = await this.userService.delete(+id);
+            res.status(201).json(deletedUser);
         } catch (error) {
             console.error("Error deleting user:", error);
             res.status(500).json({ error: "Failed to delete user" });

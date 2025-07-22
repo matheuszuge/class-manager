@@ -2,7 +2,8 @@
   "name": "node-api-base",
   "version": "1.0.0",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "ts-node-dev --poll --watch src --respawn --transpile-only src/server.ts",
+    "dev:nodemon": "nodemon --watch src --ext ts,js --exec ts-node src/server.ts",
     "lint": "eslint ./src --ext .ts"
   },
   "dependencies": {
@@ -12,6 +13,7 @@
     "express": "^4.21.2",
     "git-filter-repo": "^0.0.30",
     "helmet": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
     "next": "^15.3.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
@@ -27,6 +29,7 @@
     "nodemon": "^3.1.10",
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
