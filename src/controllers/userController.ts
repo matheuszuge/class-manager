@@ -19,8 +19,8 @@ export class UserController {
     }
 
     async create(req: Request, res: Response) {
-        const { status, role, name, classRoom, email } = req.body;
-        const data = { status, role, name, class: classRoom, email };
+        const { status, role, password, name, classroom, email } = req.body;
+        const data = { status, role, password, name, classroom, email };
         try {
             const newuser = await this.userService.create(data);
             res.status(201).json({
@@ -44,9 +44,16 @@ export class UserController {
     }
 
     async update(req: Request, res: Response) {
-        const { status, role, name, classRoom, email } = req.body;
+        const { status, role, name, password, classRoom, email } = req.body;
         const { id } = req.params;
-        const data: any = { status, role, name, classRoom, email };
+        const data: any = {
+            status,
+            role,
+            password,
+            name,
+            classRoom,
+            email,
+        };
 
         try {
             const newuser = await this.userService.update(Number(id), data);
@@ -59,8 +66,6 @@ export class UserController {
             res.status(500).json({ error: "Failed to update user" });
         }
     }
-
-    
 
     async delete(req: Request, res: Response) {
         const { id } = req.params;

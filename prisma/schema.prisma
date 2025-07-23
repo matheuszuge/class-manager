@@ -22,23 +22,27 @@ model User{
     role Role @default(ALUNO)
     name String
     password String @db.VarChar(255) 
-    class Int 
+    classroom Int?
     email String @unique
     createdAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+    updatedAt DateTime @updatedAt
 
+    
+    ClassRoom ClassRoom[]
     @@map("users")
 } 
 
-model ClassRoom{
-    id Int @id @default(autoincrement()) 
-    status Boolean @default(true)
-    title String
-    createdAt DateTime @default(now())
-    updateAt DateTime @updatedAt
+model ClassRoom {
+  id           Int      @id @default(autoincrement())
+  status       Boolean  @default(true)
+  title        String
+  responsible  Int?
+  createdAt    DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-    @@map("classroom")
-} 
+  user         User?    @relation(fields: [responsible], references: [id])
 
+  @@map("classroom")
+}
 
 

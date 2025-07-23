@@ -19,8 +19,8 @@ export class ClassController {
     }
 
     async create(req: Request, res: Response) {
-        const { status, title } = req.body;
-        const data = { status, title };
+        const { status, title, responsible } = req.body;
+        const data = { status, title, responsible };
         try {
             const newClass = await this.classService.create(data);
             res.status(201).json({
@@ -46,7 +46,7 @@ export class ClassController {
     async update(req: Request, res: Response) {
         const { status, title } = req.body;
         const { id } = req.params;
-        const data: any = {status, title};
+        const data: any = { status, title };
         try {
             const newClass = await this.classService.update(Number(id), data);
             res.status(201).json({

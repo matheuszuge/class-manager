@@ -22,9 +22,6 @@ export class UserModel implements BaseModel {
         await this.db.delete({ where: { id } });
         return { message: "User deleted successfully" };
     }
-    async login(email: string, password: string): Promise<any> {
-        return this.db.findUnique({ where: { email} });
-    }
 
     async authLogin(email: string, password: string): Promise<any> {
         const user = await this.db.findUnique({ where: { email } });
